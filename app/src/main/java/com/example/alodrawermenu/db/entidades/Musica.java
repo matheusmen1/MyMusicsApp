@@ -76,7 +76,7 @@ public class Musica {
 
     @Override
     public String toString() {
-        return  titulo+" | "+interprete+" | "+genero.getNome()+" | "+ano+" | "+duracao;
+        return  "("+id+")"+" | "+ titulo+" | "+interprete+" | "+genero.getNome()+" | "+ano+" | "+duracao;
     }
 
 
