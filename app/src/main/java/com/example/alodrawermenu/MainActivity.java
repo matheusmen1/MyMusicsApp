@@ -1,6 +1,8 @@
 package com.example.alodrawermenu;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toolbar;
@@ -17,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.alodrawermenu.db.dal.MusicaDAL;
 import com.example.alodrawermenu.db.entidades.Musica;
 import com.google.android.material.navigation.NavigationView;
 
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private GenerosFragment generosFragment = new GenerosFragment(); // instancia uma unica vez
     private MusicasFragment musicasFragment = new MusicasFragment();
-    private NovaMusicaFragment novaMusicaFragment = new NovaMusicaFragment();
+    static public int musicaId = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
         {
            if(item.getItemId()==R.id.it_lmusicas)
            {
-               cadastrarMusicas(null);
+               FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+               fragmentTransaction.replace(frameLayout.getId(), musicasFragment);
+               fragmentTransaction.commit();
            }
            if(item.getItemId()==R.id.it_musica)
            {
-               FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-               fragmentTransaction.replace(frameLayout.getId(), novaMusicaFragment);
-               fragmentTransaction.commit();
+               cadastrarMusicas(null);
            }
            if(item.getItemId()==R.id.it_lgeneros)
            {
@@ -77,7 +80,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("");
+        }
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(actionBarDrawerToggle.onOptionsItemSelected(item))
@@ -87,19 +96,21 @@ public class MainActivity extends AppCompatActivity {
     public void cadastrarMusicas(Musica musica)
     {
         //caso a música seja null, suponha a inserção de uma nova
-        if (musica == null)
+
+        if (musica == null) // cadastrar nova musica
         {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(frameLayout.getId(), musicasFragment);
-            fragmentTransaction.commit();
+            musicaId = -1;
         }
         else
         {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(frameLayout.getId(), novaMusicaFragment);
-            fragmentTransaction.commit();
+            musicaId = musica.getId();
         }
 
-    }
+        NovaMusicaFragment novaMusicaFragment = new NovaMusicaFragment(); // nova instacia para cada vez q for chamada
 
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(frameLayout.getId(), novaMusicaFragment);
+        fragmentTransaction.commit();
+
+    }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="120dp"
     android:layout_marginTop="84dp"
-    android:background="#AED581">
+    android:background="#141218">
 
     <ImageView
         android:id="@+id/imageView"
@@ -15,18 +15,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/i_mario" />
+        app:srcCompat="@drawable/icon_music" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="TextView"
+        android:text="MyMusicsApp"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Modelo Navigation Drawer" />
+        tools:text="MyMusicsApp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

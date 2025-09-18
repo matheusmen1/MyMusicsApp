@@ -1,6 +1,8 @@
 package com.example.alodrawermenu;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -82,21 +84,32 @@ public class GenerosFragment extends Fragment {
         lvGeneros.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                GeneroDAL dal = new GeneroDAL(view.getContext());
-                Genero genero = (Genero) adapterView.getItemAtPosition(i); // pega o genero selecionado
-                dal.apagar(genero.getId());
-                // atualiza o listview em tempo real
-                carregarGeneros(view);
+                AlertDialog alerta;
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Confirm");
+                builder.setMessage("Are You Sure?");
+                //define um botão como positivo
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        GeneroDAL dal = new GeneroDAL(view.getContext());
+                        Genero genero = (Genero) adapterView.getItemAtPosition(i); // pega o genero selecionado
+                        dal.apagar(genero.getId());
+                        // atualiza o listview em tempo real
+                        carregarGeneros(view);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+                alerta = builder.create();
+                alerta.show();
+
+
                 return true;
             }
         });
-        lvGeneros.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Musica musica = (Musica) adapterView.getItemAtPosition(i);
-                mainActivity.cadastrarMusicas(musica);
-            }
-        });
+
         carregarGeneros(view);
         return view;
     }

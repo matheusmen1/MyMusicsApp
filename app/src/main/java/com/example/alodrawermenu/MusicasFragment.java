@@ -1,6 +1,9 @@
 package com.example.alodrawermenu;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,10 +12,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.alodrawermenu.db.dal.GeneroDAL;
 import com.example.alodrawermenu.db.dal.MusicaDAL;
+import com.example.alodrawermenu.db.entidades.Genero;
 import com.example.alodrawermenu.db.entidades.Musica;
 
 import java.util.List;
@@ -34,7 +40,7 @@ public class MusicasFragment extends Fragment {
     private String mParam2;
     private ListView lvMusicas;
     private MainActivity mainActivity;
-
+    static public int flag = 0;
     public MusicasFragment() {
         // Required empty public constructor
     }
@@ -78,6 +84,41 @@ public class MusicasFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_musicas, container, false);
         lvMusicas = view.findViewById(R.id.lvMusicas);
+        lvMusicas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog alerta;
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Confirm");
+                builder.setMessage("Are You Sure?");
+                //define um botão como positivo
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        MusicaDAL musicaDAL = new MusicaDAL(view.getContext());
+                        Musica musica;
+                        musica = (Musica) parent.getItemAtPosition(position);
+                        musicaDAL.apagar(musica.getId());
+                        carregarMusicas(view);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+                alerta = builder.create();
+                alerta.show();
+
+                return false;
+            }
+
+        });
+        lvMusicas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Musica musica = (Musica) parent.getItemAtPosition(position);
+                mainActivity.cadastrarMusicas(musica);
+            }
+        });
         carregarMusicas(view);
         return view;
     }
@@ -87,5 +128,6 @@ public class MusicasFragment extends Fragment {
         MusicaDAL musicaDAL = new MusicaDAL(view.getContext());
         List<Musica> musicaList = musicaDAL.get("");
         lvMusicas.setAdapter(new ArrayAdapter<Musica>(view.getContext(), android.R.layout.simple_list_item_1, musicaList));
+
     }
 }
