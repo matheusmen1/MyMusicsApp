@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.alodrawermenu.db.dal.GeneroDAL;
 import com.example.alodrawermenu.db.dal.MusicaDAL;
@@ -98,19 +99,25 @@ public class GenerosFragment extends Fragment {
                         generoId = genero.getId();
                         MusicaDAL musicaDAL = new MusicaDAL(view.getContext());
                         List<Musica> musicaList = musicaDAL.get("");
-                        int i = 0;
-                        while(i < musicaList.size())
+                        int i = 0, flag = 0;
+                        while(i < musicaList.size() && flag != 1)
                         {
                             Musica musica = musicaList.get(i);
                             if (musica.getGenero().getId() == generoId)
                             {
-                                musicaDAL.apagar(musica.getId());
-                                musicaList.remove(musica);
-
+                                flag = 1;
                             }
                             i++;
                         }
-                        dal.apagar(genero.getId());
+                        if (flag == 0)
+                        {
+                            dal.apagar(genero.getId());
+                        }
+                        else
+                        {
+                            Toast.makeText(getContext(),"Gênero em Uso",Toast.LENGTH_LONG).show();
+                        }
+
 
                         // atualiza o listview em tempo real
                         carregarGeneros(view);
