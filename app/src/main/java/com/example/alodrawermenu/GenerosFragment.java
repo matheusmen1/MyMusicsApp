@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.alodrawermenu.db.dal.GeneroDAL;
+import com.example.alodrawermenu.db.dal.MusicaDAL;
 import com.example.alodrawermenu.db.entidades.Genero;
 import com.example.alodrawermenu.db.entidades.Musica;
 
@@ -93,7 +94,24 @@ public class GenerosFragment extends Fragment {
                     public void onClick(DialogInterface arg0, int arg1) {
                         GeneroDAL dal = new GeneroDAL(view.getContext());
                         Genero genero = (Genero) adapterView.getItemAtPosition(i); // pega o genero selecionado
+                        int generoId;
+                        generoId = genero.getId();
+                        MusicaDAL musicaDAL = new MusicaDAL(view.getContext());
+                        List<Musica> musicaList = musicaDAL.get("");
+                        int i = 0;
+                        while(i < musicaList.size())
+                        {
+                            Musica musica = musicaList.get(i);
+                            if (musica.getGenero().getId() == generoId)
+                            {
+                                musicaDAL.apagar(musica.getId());
+                                musicaList.remove(musica);
+
+                            }
+                            i++;
+                        }
                         dal.apagar(genero.getId());
+
                         // atualiza o listview em tempo real
                         carregarGeneros(view);
                     }
